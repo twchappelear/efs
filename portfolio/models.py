@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+import requests
+
 
 class Customer(models.Model):
     name = models.CharField(max_length=50)
@@ -59,6 +61,7 @@ class Stock(models.Model):
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
     purchase_date = models.DateField(default=timezone.now, blank=True, null=True)
 
+
     def created(self):
         self.recent_date = timezone.now()
         self.save()
@@ -67,4 +70,56 @@ class Stock(models.Model):
         return str(self.customer)
 
     def initial_stock_value(self):
-        return self.shares * self.purchase_price
+        return round(self.shares * round(self.purchase_price,2),2)
+
+    def current_stock_price(self):
+        symbol_f = str(self.symbol)
+        main_api = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='
+        api_key = '&interval=1min&apikey=RO9YRILS2PAHXK2G'
+        url = main_api + symbol_f + api_key
+        json_data = requests.get(url).json()
+        mkt_dt = (json_data["Meta Data"]["3. Last Refreshed"])
+        open_price = round(float(json_data["Time Series (1min)"][mkt_dt]["1. open"]),2)
+        share_value = round(open_price,2)
+        return round(share_value,2)
+
+    def current_stock_value(self):
+        symbol_f = str(self.symbol)
+        main_api = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol='
+        api_key = '&interval=1min&apikey=RO9YRILS2PAHXK2G'
+        url = main_api + symbol_f + api_key
+        json_data = requests.get(url).json()
+        mkt_dt = (json_data["Meta Data"]["3. Last Refreshed"])
+        open_price = round(float(json_data["Time Series (1min)"][mkt_dt]["1. open"]),2)
+        share_value = round(open_price,2)
+        return round(float(share_value) * float(self.shares),2)
+
+class MutualFund(models.Model):
+    customer = models.ForeignKey(Customer, related_name='mutualfunds')
+    symbol = models.CharField(max_length=10)
+    name = models.CharField(max_length=50)
+    shares = models.DecimalField (max_digits=10, decimal_places=1,null=True)
+    purchase_price = models.DecimalField(max_digits=10,decimal_places=2)
+    purchase_date = models.DateField(default=timezone.now)
+    current_value = models.DecimalField(max_digits=10, decimal_places=2)
+    current_date = models.DateField(default=timezone.now, blank=True, null=True)
+
+
+    def created(self):
+        self.purchase_date=timezone.now()
+        self.save()
+
+    def updated(self):
+        self.current_date=timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.customer)
+
+    def initial_mutualfund_value(self):
+        return round(self.shares * self.purchase_price,2)
+
+    def results_by_mutualfund(self):
+        return round(self.shares * self.current_value,2)
+
+
