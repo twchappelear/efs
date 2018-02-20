@@ -39,6 +39,7 @@
                 <th>Shares</th>
                 <th>Purchase Price</th>
                 <th>Purchase Date</th>
+                <th>Current Price</th>
                 <th colspan="3">Actions</th>
             </tr>
             </thead>
@@ -48,9 +49,10 @@
                     <td>{{ mutualfund.customer }}</td>
                     <td>{{ mutualfund.symbol }}</td>
                     <td>{{ mutualfund.name }}</td>
-                    <td>{{ mutualfund.shares }}</td>
-                    <td>{{ mutualfund.purchase_price }}</td>
+                    <td align="right">{{ mutualfund.shares }}</td>
+                    <td align="right">{{ mutualfund.purchase_price }}</td>
                     <td>{{ mutualfund.purchase_date }}</td>
+                    <td align="right">{{ mutualfund.current_value }}</td>
                     <td><a href="{% url 'portfolio:mutualfund_edit' pk=mutualfund.pk %}"
                            class="btn btn-warning">Edit</a></td>
                     <td><a href="{% url 'portfolio:mutualfund_delete' pk=mutualfund.pk %}"

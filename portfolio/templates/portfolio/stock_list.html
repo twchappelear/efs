@@ -48,9 +48,9 @@
                     <td>{{ stock.customer }}</td>
                     <td>{{ stock.symbol }}</td>
                     <td>{{ stock.name }}</td>
-                    <td>{{ stock.shares }}</td>
-                    <td>{{ stock.purchase_price }}</td>
-                    <td>{{ stock.purchase_date }}</td>
+                    <td align="right">{{ stock.shares }}</td>
+                    <td align="right">{{ stock.purchase_price }}</td>
+                    <td align="right">{{ stock.purchase_date }}</td>
                     <td><a href="{% url 'portfolio:stock_edit' pk=stock.pk %}"
                            class="btn btn-warning">Edit</a></td>
                     <td><a href="{% url 'portfolio:stock_delete' pk=stock.pk %}"

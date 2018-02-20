@@ -163,8 +163,7 @@ def mutualfund_new(request):
                          {'mutualfunds': mutualfunds})
    else:
        form = MutualFundForm()
-       # print("Else")
-   return render(request, 'portfolio/mutualfund_new.html', {'form': form})
+   return render(request, 'portfolio/mutualfund_edit.html', {'form': form})
 
 
 @login_required
